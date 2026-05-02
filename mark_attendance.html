@@ -1,0 +1,54 @@
+<h2>Mark Attendance</h2>
+
+<form method="POST">
+    <label>Select Subject</label>
+    <select name="subject" required>
+        <option value="Maths">Maths</option>
+        <option value="Science">Science</option>
+    </select>
+
+    <label>Semester</label>
+    <select name="semester" required>
+        <option value="Sem 1">Sem 1</option>
+        <option value="Sem 2">Sem 2</option>
+    </select>
+
+    <label>Date</label>
+    <input type="date" name="date" value="2026-01-01" required>
+
+    <button type="submit">Load Students</button>
+</form>
+
+{% if students %}
+<hr>
+
+<form method="POST" action="/save_attendance">
+    <input type="hidden" name="subject" value="{{ subject }}">
+    <input type="hidden" name="semester" value="{{ semester }}">
+    <input type="hidden" name="date" value="{{ date }}">
+
+    <table border="1" cellpadding="8">
+        <tr>
+            <th>Roll</th>
+            <th>Name</th>
+            <th>Status</th>
+        </tr>
+
+        {% for s in students %}
+        <tr>
+            <td>{{ s[2] }}</td>
+            <td>{{ s[1] }}</td>
+            <td>
+                <select name="status_{{ s[0] }}">
+                    <option value="Present">Present</option>
+                    <option value="Absent">Absent</option>
+                </select>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <br>
+    <button type="submit">Save Attendance</button>
+</form>
+{% endif %}

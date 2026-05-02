@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Marks</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            margin: 0;
+            padding: 24px;
+        }
+
+        .page {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+            padding: 20px;
+        }
+
+        .top-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: end;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 18px;
+        }
+
+        h2 {
+            margin: 0;
+            color: #2c3e50;
+        }
+
+        .semester-filter {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .semester-filter select,
+        .semester-filter button {
+            padding: 8px 10px;
+            border-radius: 6px;
+            border: 1px solid #ccd4dd;
+        }
+
+        .semester-filter button {
+            background: #2d89ef;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        .info {
+            margin: 10px 0;
+            padding: 10px 12px;
+            border-radius: 6px;
+        }
+
+        .info.success {
+            background: #e8f8ee;
+            color: #1d6b3a;
+            border: 1px solid #a7dfbf;
+        }
+
+        .info.error {
+            background: #fdecec;
+            color: #9c2e2e;
+            border: 1px solid #f0b2b2;
+        }
+
+        .subject-text {
+            margin-bottom: 14px;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        th,
+        td {
+            border: 1px solid #e2e8f0;
+            padding: 8px;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        th {
+            background: #eef3f9;
+            color: #2c3e50;
+        }
+
+        td input,
+        td select,
+        td button {
+            width: 100%;
+            padding: 7px;
+            border: 1px solid #ccd4dd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        td button {
+            background: #27ae60;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 20px;
+            color: #667085;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 14px;
+            color: #2d89ef;
+            text-decoration: none;
+        }
+
+        @media (max-width: 900px) {
+            .table-wrap {
+                overflow-x: auto;
+            }
+            table {
+                min-width: 960px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <div class="top-row">
+            <h2>Add Student Marks</h2>
+
+            <form method="GET" action="/add_marks" class="semester-filter">
+                <label for="semester">Semester</label>
+                <select id="semester" name="semester" required>
+                    {% for sem in semesters %}
+                    <option value="{{ sem }}" {% if selected_semester == sem %}selected{% endif %}>{{ sem }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit">Show Students</button>
+            </form>
+        </div>
+
+        {% if success_message %}
+        <div class="info success">{{ success_message }}</div>
+        {% endif %}
+
+        {% if error_message %}
+        <div class="info error">{{ error_message }}</div>
+        {% endif %}
+
+        {% if default_subject %}
+        <div class="subject-text">Subject: {{ default_subject }}</div>
+        {% endif %}
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Roll No</th>
+                        <th>Student Name</th>
+                        {% if not default_subject %}
+                        <th>Subject</th>
+                        {% endif %}
+                        <th>Unit Test 1 Marks</th>
+                        <th>Unit Test 1 Max</th>
+                        <th>Unit Test 2 Marks</th>
+                        <th>Unit Test 2 Max</th>
+                        <th>Final Exam Marks</th>
+                        <th>Final Exam Max</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                    <tr>
+                        <td>{{ student[0] }}</td>
+                        <td>{{ student[1] }}</td>
+
+                        {% if not default_subject %}
+                        <td>
+                            <select name="subject" form="marks-form-{{ loop.index }}" required>
+                                <option value="" selected disabled>Select Subject</option>
+                                <option value="python">python</option>
+                                <option value="java">java</option>
+                                <option value="php">php</option>
+                                <option value="power bi">power bi</option>
+                            </select>
+                        </td>
+                        {% endif %}
+
+                        <td><input type="number" form="marks-form-{{ loop.index }}" name="ut1_marks" min="0" required></td>
+                        <td><input type="number" form="marks-form-{{ loop.index }}" name="ut1_max" min="1" value="20" required></td>
+                        <td><input type="number" form="marks-form-{{ loop.index }}" name="ut2_marks" min="0" required></td>
+                        <td><input type="number" form="marks-form-{{ loop.index }}" name="ut2_max" min="1" value="20" required></td>
+                        <td><input type="number" form="marks-form-{{ loop.index }}" name="final_marks" min="0" required></td>
+                        <td><input type="number" form="marks-form-{{ loop.index }}" name="final_max" min="1" value="60" required></td>
+                        <td>
+                            <form id="marks-form-{{ loop.index }}" method="POST" action="/add_marks">
+                                <input type="hidden" name="roll" value="{{ student[0] }}">
+                                <input type="hidden" name="semester" value="{{ selected_semester }}">
+                                {% if default_subject %}
+                                <input type="hidden" name="subject" value="{{ default_subject }}">
+                                {% endif %}
+                                <button type="submit">Save</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="10" class="empty">No students found in semester {{ selected_semester }}.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <a href="/teacher/dashboard" class="back-link">Back to Teacher Dashboard</a>
+    </div>
+</body>
+</html>

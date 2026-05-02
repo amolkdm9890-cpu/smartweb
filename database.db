@@ -1,0 +1,49 @@
+CREATE TABLE users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT UNIQUE,
+    password TEXT,
+    role TEXT
+);
+
+CREATE TABLE students (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT,
+    roll_no TEXT UNIQUE,
+    semester TEXT,
+    username TEXT,
+    password TEXT
+);
+
+CREATE TABLE teachers (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT,
+    subject TEXT,
+    username TEXT UNIQUE
+);
+
+CREATE TABLE attendance (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    roll_no TEXT,
+    subject TEXT,
+    lecture_no INTEGER,
+    status TEXT,
+    date TEXT
+);
+
+CREATE TABLE marks (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    roll_no TEXT,
+    subject TEXT,
+    type TEXT,        -- "Theory" or "Practical"
+    marks INTEGER,
+    total_marks INTEGER -- maximum marks for that exam
+);
+
+
+CREATE TABLE pdfs (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT,
+    filename TEXT
+);
+
+

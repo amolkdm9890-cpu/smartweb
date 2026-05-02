@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Login & Registration</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body{
+    background:#050505;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    color:white;
+}
+
+.container{
+    background:#111;
+    border-radius:12px;
+    box-shadow:0 0 25px rgba(0,255,255,.2);
+    position:relative;
+    overflow:hidden;
+    width:800px;
+    max-width:100%;
+    min-height:520px;
+    border:1px solid rgba(0,255,255,.3);
+}
+
+/* Forms */
+.form-container{
+    position:absolute;
+    top:0;
+    height:100%;
+    width:50%;
+    transition:all .6s ease-in-out;
+}
+
+.sign-in-container{
+    left:0;
+    z-index:2;
+}
+
+.sign-up-container{
+    left:0;
+    opacity:0;
+    z-index:1;
+}
+
+.container.right-panel-active .sign-in-container{
+    transform:translateX(100%);
+    opacity:0;
+}
+
+.container.right-panel-active .sign-up-container{
+    transform:translateX(100%);
+    opacity:1;
+    z-index:5;
+}
+
+/* Form */
+form{
+    background:#111;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    padding:0 50px;
+    height:100%;
+    text-align:center;
+}
+
+h1{
+    margin-bottom:20px;
+    letter-spacing:1px;
+}
+
+.input-group{
+    position:relative;
+    width:100%;
+    margin:10px 0;
+}
+
+.input-group i{
+    position:absolute;
+    left:15px;
+    top:14px;
+    color:#555;
+}
+
+input{
+    width:100%;
+    padding:12px 15px 12px 40px;
+    background:#1a1a1a;
+    border:1px solid #333;
+    border-radius:8px;
+    color:white;
+    outline:none;
+}
+
+input:focus{
+    border-color:#00ffff;
+    box-shadow:0 0 10px rgba(0,255,255,.2);
+}
+
+button{
+    margin-top:20px;
+    padding:12px 50px;
+    border:none;
+    border-radius:25px;
+    background:linear-gradient(to right,#008080,#00ffff);
+    font-weight:bold;
+    cursor:pointer;
+}
+
+span{
+    margin-top:20px;
+    font-size:14px;
+    color:#888;
+}
+
+b{
+    color:#00ffff;
+    cursor:pointer;
+    text-decoration:underline;
+}
+
+/* Error */
+.error{
+    background:rgba(255,0,0,.15);
+    border:1px solid rgba(255,0,0,.4);
+    padding:8px;
+    width:100%;
+    border-radius:6px;
+    margin-bottom:10px;
+    font-size:14px;
+}
+
+/* Overlay */
+.overlay-container{
+    position:absolute;
+    top:0;
+    left:50%;
+    width:50%;
+    height:100%;
+    overflow:hidden;
+    transition:transform .6s ease-in-out;
+    z-index:100;
+}
+
+.container.right-panel-active .overlay-container{
+    transform:translateX(-100%);
+}
+
+.overlay{
+    background:linear-gradient(135deg,#002222,#004d4d);
+    position:relative;
+    left:-100%;
+    height:100%;
+    width:200%;
+    transform:translateX(0);
+    transition:transform .6s ease-in-out;
+}
+
+.container.right-panel-active .overlay{
+    transform:translateX(50%);
+}
+
+.overlay-panel{
+    position:absolute;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    padding:0 40px;
+    height:100%;
+    width:50%;
+}
+
+.overlay-left{
+    transform:translateX(-5%);
+}
+
+.overlay-right{
+    right:0;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container" id="container">
+
+    <!-- REGISTER -->
+    <div class="form-container sign-up-container">
+        <form method="POST" action="/student/register">
+            <h1>Register</h1>
+
+            <div class="input-group">
+                <i class="fa fa-user"></i>
+                <input type="text" name="name" placeholder="Full Name" required>
+            </div>
+
+            <div class="input-group">
+                <i class="fa fa-id-card"></i>
+                <input type="text" name="roll" placeholder="Roll Number" required>
+            </div>
+
+            <div class="input-group">
+                <i class="fa fa-graduation-cap"></i>
+                <select name="semester" class="form-select" id="semester" required>
+                <option value="" selected disabled>Select Semester</option>
+                <option>Sem 1</option>
+                <option>Sem 2</option>
+                <option>Sem 3</option>
+                <option>Sem 4</option>
+                <option>Sem 5</option>
+                <option>Sem 6</option>
+            </select>
+            </div>
+
+            <div class="input-group">
+                <i class="fa fa-user"></i>
+                <input type="text" name="username" placeholder="Username" required>
+            </div>
+
+            <div class="input-group">
+                <i class="fa fa-lock"></i>
+                <input type="password" name="password" placeholder="Password" required>
+            </div>
+
+            <button type="submit">Register</button>
+            <span>Already have an account? <b id="signIn">Sign In</b></span>
+        </form>
+    </div>
+
+    <!-- LOGIN -->
+    <div class="form-container sign-in-container">
+        <form method="POST" action="/student/login">
+            <h1>Login</h1>
+
+            {% if error %}
+            <div class="error">{{ error }}</div>
+            {% endif %}
+
+            <div class="input-group">
+                <i class="fa fa-user"></i>
+                <input type="text" name="username" placeholder="Username" required>
+            </div>
+
+            <div class="input-group">
+                <i class="fa fa-lock"></i>
+                <input type="password" name="password" placeholder="Password" required>
+            </div>
+
+            <button type="submit">Login</button>
+            <span>Don't have an account? <b id="signUp">Sign Up</b></span>
+        </form>
+    </div>
+
+    <!-- OVERLAY -->
+    <div class="overlay-container">
+        <div class="overlay">
+            <div class="overlay-panel overlay-left">
+                <h1>WELCOME!</h1>
+                <p><br>Create an account to start your journey.</p>
+            </div>
+            <div class="overlay-panel overlay-right">
+                <h1>WELCOME BACK!</h1>
+                <p>   Login to access your dashboard.</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+const signUp = document.getElementById("signUp");
+const signIn = document.getElementById("signIn");
+const container = document.getElementById("container");
+
+signUp.onclick = () => container.classList.add("right-panel-active");
+signIn.onclick = () => container.classList.remove("right-panel-active");
+</script>
+
+</body>
+</html>

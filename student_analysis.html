@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Analysis</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #07111f;
+            --panel: rgba(255, 255, 255, 0.08);
+            --panel-strong: #0f1b33;
+            --card: #101d36;
+            --text: #e5eefc;
+            --muted: #9fb0d0;
+            --accent: #4f8cff;
+            --accent-2: #31c48d;
+            --warn: #f59e0b;
+            --danger: #ef4444;
+            --border: rgba(255, 255, 255, 0.12);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(circle at top left, rgba(79, 140, 255, 0.28), transparent 30%),
+                radial-gradient(circle at right top, rgba(49, 196, 141, 0.22), transparent 28%),
+                linear-gradient(160deg, #050b14 0%, #0a1426 55%, #08111f 100%);
+            min-height: 100vh;
+            padding: 28px;
+        }
+
+        .wrap {
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, rgba(16, 29, 54, 0.92), rgba(11, 20, 37, 0.92));
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 28px;
+            box-shadow: 0 22px 60px rgba(0, 0, 0, 0.35);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .hero::after {
+            content: "";
+            position: absolute;
+            inset: auto -80px -90px auto;
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(79, 140, 255, 0.25), transparent 68%);
+        }
+
+        .title-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+            align-items: start;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: rgba(79, 140, 255, 0.15);
+            color: #b9d0ff;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            margin: 14px 0 10px;
+            font-size: clamp(30px, 4vw, 48px);
+            line-height: 1.05;
+        }
+
+        .subtext {
+            color: var(--muted);
+            max-width: 760px;
+            font-size: 15px;
+            line-height: 1.7;
+        }
+
+        .meta {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(160px, 1fr));
+            gap: 12px;
+            min-width: 280px;
+        }
+
+        .meta-card, .stat-card, .chart-card, .table-card {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .meta-card {
+            padding: 16px;
+        }
+
+        .meta-card span {
+            display: block;
+            color: var(--muted);
+            font-size: 12px;
+            margin-bottom: 6px;
+        }
+
+        .meta-card strong {
+            font-size: 17px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 16px;
+            margin-top: 18px;
+        }
+
+        .stat-card {
+            padding: 18px;
+        }
+
+        .stat-card .label {
+            color: var(--muted);
+            font-size: 13px;
+            margin-bottom: 10px;
+        }
+
+        .stat-card .value {
+            font-size: 30px;
+            font-weight: 800;
+        }
+
+        .stat-card .hint {
+            margin-top: 8px;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 18px;
+            margin-top: 18px;
+        }
+
+        .chart-card, .table-card {
+            padding: 20px;
+        }
+
+        .section-head {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: end;
+            margin-bottom: 16px;
+        }
+
+        .section-head h2 {
+            margin: 0;
+            font-size: 20px;
+        }
+
+        .section-head p {
+            margin: 4px 0 0;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .chart-wrap {
+            height: 320px;
+        }
+
+        .table-card {
+            margin-top: 18px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 12px 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            text-align: left;
+        }
+
+        th {
+            color: #cfe0ff;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        td {
+            color: #edf4ff;
+            font-size: 13px;
+        }
+
+        .badge {
+            display: inline-flex;
+            padding: 5px 10px;
+            border-radius: 999px;
+            font-weight: 700;
+            font-size: 12px;
+        }
+
+        .badge.present { background: rgba(49, 196, 141, 0.18); color: #a8f0d4; }
+        .badge.absent { background: rgba(239, 68, 68, 0.16); color: #ffb5b5; }
+
+        .actions {
+            margin-top: 18px;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 16px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 700;
+            color: white;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .btn:hover { transform: translateY(-1px); }
+        .btn-primary { background: linear-gradient(135deg, #4f8cff, #2563eb); }
+        .btn-secondary { background: linear-gradient(135deg, #31c48d, #059669); }
+
+        .empty {
+            color: var(--muted);
+            padding: 18px 0;
+        }
+
+        @media (max-width: 1024px) {
+            .stats, .grid { grid-template-columns: 1fr 1fr; }
+        }
+
+        @media (max-width: 720px) {
+            body { padding: 16px; }
+            .stats, .grid, .meta { grid-template-columns: 1fr; }
+            .chart-wrap { height: 280px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <section class="hero">
+            <div class="title-row">
+                <div>
+                    <span class="eyebrow">Student Analysis</span>
+                    <h1>{{ student.name }}</h1>
+                    <div class="subtext">
+                        Performance summary for roll number {{ student.roll }} in semester {{ student.semester }}.
+                        This page combines marks and attendance to show trends, subject-wise performance, and overall standing.
+                    </div>
+                </div>
+
+                <div class="meta">
+                    <div class="meta-card">
+                        <span>Username</span>
+                        <strong>{{ student.username }}</strong>
+                    </div>
+                    <div class="meta-card">
+                        <span>Roll Number</span>
+                        <strong>{{ student.roll }}</strong>
+                    </div>
+                    <div class="meta-card">
+                        <span>Semester</span>
+                        <strong>{{ student.semester }}</strong>
+                    </div>
+                    <div class="meta-card">
+                        <span>Subjects Tracked</span>
+                        <strong>{{ subject_labels|length }}</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="label">Marks Percentage</div>
+                    <div class="value">{{ overall_percentage }}%</div>
+                    <div class="hint">Grade {{ grade }} | SGPA {{ sgpa }}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="label">Attendance Rate</div>
+                    <div class="value">{{ attendance_rate }}%</div>
+                    <div class="hint">{{ present_count }} present | {{ absent_count }} absent</div>
+                </div>
+                <div class="stat-card">
+                    <div class="label">Marks Obtained</div>
+                    <div class="value">{{ total_obtained }}</div>
+                    <div class="hint">Out of {{ total_max }}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="label">Attendance Records</div>
+                    <div class="value">{{ attendance_data|length }}</div>
+                    <div class="hint">All lecture entries</div>
+                </div>
+            </div>
+        </section>
+
+        <div class="grid">
+            <section class="chart-card">
+                <div class="section-head">
+                    <div>
+                        <h2>Subject-wise Marks</h2>
+                        <p>Percentage achieved in each subject.</p>
+                    </div>
+                </div>
+                <div class="chart-wrap">
+                    <canvas id="marksChart"></canvas>
+                </div>
+            </section>
+
+            <section class="chart-card">
+                <div class="section-head">
+                    <div>
+                        <h2>Attendance by Subject</h2>
+                        <p>Attendance percentage for each subject.</p>
+                    </div>
+                </div>
+                <div class="chart-wrap">
+                    <canvas id="attendanceChart"></canvas>
+                </div>
+            </section>
+        </div>
+
+        <div class="grid">
+            <section class="chart-card">
+                <div class="section-head">
+                    <div>
+                        <h2>Overall Attendance Split</h2>
+                        <p>Present vs absent lectures.</p>
+                    </div>
+                </div>
+                <div class="chart-wrap">
+                    <canvas id="splitChart"></canvas>
+                </div>
+            </section>
+
+            <section class="table-card">
+                <div class="section-head">
+                    <div>
+                        <h2>Quick Actions</h2>
+                        <p>Download or return to the dashboard.</p>
+                    </div>
+                </div>
+                <div class="actions">
+                    <a class="btn btn-primary" href="/view_marks">View Detailed Marks</a>
+                    <a class="btn btn-secondary" href="/view_attendance">View Attendance Log</a>
+                    <a class="btn btn-primary" href="/download_marksheet">Download Marksheet</a>
+                    <a class="btn btn-secondary" href="/download_student_attendance_pdf">Download Attendance PDF</a>
+                    <a class="btn btn-primary" href="/download_student_analysis_pdf">Download Analysis PDF</a>
+                </div>
+            </section>
+        </div>
+
+        <section class="table-card">
+            <div class="section-head">
+                <div>
+                    <h2>Marks Detail</h2>
+                    <p>Every exam entry used in the charts above.</p>
+                </div>
+            </div>
+
+            {% if marks_data %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Subject</th>
+                        <th>Your %</th>
+                        <th>Class Avg %</th>
+                        <th>Gap</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in subject_rows %}
+                    <tr>
+                        <td>{{ row.subject }}</td>
+                        <td>{{ row.percentage }}%</td>
+                        <td>{{ row.class_average }}%</td>
+                        <td>
+                            {% if row.percentage >= row.class_average %}
+                                +{{ (row.percentage - row.class_average)|round(2) }}
+                            {% else %}
+                                -{{ (row.class_average - row.percentage)|round(2) }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            <span class="badge {% if row.status == 'Pass' %}present{% else %}absent{% endif %}">
+                                {{ row.status }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty">No marks found for this student yet.</div>
+            {% endif %}
+        </section>
+
+        <section class="table-card" style="margin-top: 18px;">
+            <div class="section-head">
+                <div>
+                    <h2>Attendance Detail</h2>
+                    <p>Lecture records used in the attendance charts.</p>
+                </div>
+            </div>
+
+            {% if attendance_data %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Subject</th>
+                        <th>Lecture</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in attendance_data %}
+                    <tr>
+                        <td>{{ row[0] }}</td>
+                        <td>{{ row[1] }}</td>
+                        <td><span class="badge {{ row[2]|lower }}">{{ row[2] }}</span></td>
+                        <td>{{ row[3] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty">No attendance data found for this student yet.</div>
+            {% endif %}
+        </section>
+    </div>
+
+    <script>
+        const marksLabels = {{ subject_labels | tojson }};
+        const marksValues = {{ subject_percentages | tojson }};
+        const classAverageValues = {{ class_average_percentages | tojson }};
+        const attendanceLabels = {{ attendance_labels | tojson }};
+        const attendanceValues = {{ attendance_percentages | tojson }};
+        const presentCount = {{ present_count }};
+        const absentCount = {{ absent_count }};
+
+        const baseOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: '#e5eefc'
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    ticks: { color: '#cfe0ff' },
+                    grid: { color: 'rgba(255,255,255,0.06)' }
+                },
+                y: {
+                    ticks: { color: '#cfe0ff' },
+                    grid: { color: 'rgba(255,255,255,0.06)' },
+                    beginAtZero: true,
+                    max: 100
+                }
+            }
+        };
+
+        if (marksLabels.length) {
+            new Chart(document.getElementById('marksChart'), {
+                type: 'bar',
+                data: {
+                    labels: marksLabels,
+                    datasets: [
+                        {
+                            label: 'Your Marks %',
+                            data: marksValues,
+                            backgroundColor: 'rgba(79, 140, 255, 0.8)',
+                            borderRadius: 10
+                        },
+                        {
+                            label: 'Class Average %',
+                            data: classAverageValues,
+                            backgroundColor: 'rgba(49, 196, 141, 0.75)',
+                            borderRadius: 10
+                        }
+                    ]
+                },
+                options: baseOptions
+            });
+        }
+
+        if (attendanceLabels.length) {
+            new Chart(document.getElementById('attendanceChart'), {
+                type: 'line',
+                data: {
+                    labels: attendanceLabels,
+                    datasets: [{
+                        label: 'Attendance %',
+                        data: attendanceValues,
+                        borderColor: '#31c48d',
+                        backgroundColor: 'rgba(49, 196, 141, 0.18)',
+                        tension: 0.35,
+                        fill: true,
+                        pointRadius: 4
+                    }]
+                },
+                options: baseOptions
+            });
+        }
+
+        new Chart(document.getElementById('splitChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Present', 'Absent'],
+                datasets: [{
+                    data: [presentCount, absentCount],
+                    backgroundColor: ['#31c48d', '#ef4444'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        labels: { color: '#e5eefc' }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Analysis</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #07111f;
+            --panel: rgba(255, 255, 255, 0.08);
+            --text: #e5eefc;
+            --muted: #9fb0d0;
+            --border: rgba(255, 255, 255, 0.12);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(circle at top left, rgba(79, 140, 255, 0.28), transparent 30%),
+                radial-gradient(circle at right top, rgba(49, 196, 141, 0.22), transparent 28%),
+                linear-gradient(160deg, #050b14 0%, #0a1426 55%, #08111f 100%);
+            min-height: 100vh;
+            padding: 28px;
+        }
+
+        .wrap {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .hero, .card {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 22px;
+            backdrop-filter: blur(10px);
+        }
+
+        .hero {
+            padding: 28px;
+            margin-bottom: 18px;
+        }
+
+        .title-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+            align-items: start;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: rgba(79, 140, 255, 0.15);
+            color: #b9d0ff;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            margin: 14px 0 10px;
+            font-size: clamp(30px, 4vw, 48px);
+            line-height: 1.05;
+        }
+
+        .subtext {
+            color: var(--muted);
+            max-width: 860px;
+            line-height: 1.7;
+        }
+
+        .stats {
+            margin-top: 18px;
+            display: grid;
+            grid-template-columns: repeat(6, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .stat {
+            padding: 16px;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--border);
+        }
+
+        .stat .label {
+            color: var(--muted);
+            font-size: 12px;
+            margin-bottom: 8px;
+        }
+
+        .stat .value {
+            font-size: 28px;
+            font-weight: 800;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 18px;
+            margin-bottom: 18px;
+        }
+
+        .card {
+            padding: 20px;
+        }
+
+        .card h2 {
+            margin: 0 0 6px;
+            font-size: 20px;
+        }
+
+        .card p {
+            margin: 0 0 16px;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .chart-wrap {
+            height: 320px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            text-align: left;
+            font-size: 13px;
+        }
+
+        th {
+            color: #cfe0ff;
+            font-weight: 700;
+        }
+
+        td {
+            color: #edf4ff;
+        }
+
+        .badge {
+            display: inline-flex;
+            padding: 5px 10px;
+            border-radius: 999px;
+            font-weight: 700;
+            font-size: 12px;
+        }
+
+        .pass { background: rgba(49, 196, 141, 0.18); color: #a8f0d4; }
+        .fail { background: rgba(239, 68, 68, 0.16); color: #ffb5b5; }
+
+        .wide {
+            margin-bottom: 18px;
+        }
+
+        .actions {
+            margin-top: 16px;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 16px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 700;
+            color: white;
+        }
+
+        .btn-primary { background: linear-gradient(135deg, #4f8cff, #2563eb); }
+        .btn-secondary { background: linear-gradient(135deg, #31c48d, #059669); }
+
+        @media (max-width: 1100px) {
+            .stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+            .grid { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 720px) {
+            body { padding: 16px; }
+            .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .chart-wrap { height: 280px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <section class="hero">
+            <div class="title-row">
+                <div>
+                    <span class="eyebrow">Teacher Analytics</span>
+                    <h1>Overall Student Data Analysis</h1>
+                    <div class="subtext">
+                        A full-class performance view showing student score trends, subject averages, attendance trends, and pass/fail distribution.
+                    </div>
+                </div>
+                <div class="actions">
+                    <a class="btn btn-primary" href="/teacher/dashboard">Back to Dashboard</a>
+                    <a class="btn btn-secondary" href="/teacher/view_marks">View Marks List</a>
+                </div>
+            </div>
+
+            <div class="stats">
+                <div class="stat">
+                    <div class="label">Total Students</div>
+                    <div class="value">{{ analysis.total_students }}</div>
+                </div>
+                <div class="stat">
+                    <div class="label">Students With Marks</div>
+                    <div class="value">{{ analysis.students_with_marks }}</div>
+                </div>
+                <div class="stat">
+                    <div class="label">Class Average</div>
+                    <div class="value">{{ analysis.overall_average }}%</div>
+                </div>
+                <div class="stat">
+                    <div class="label">Pass Count</div>
+                    <div class="value">{{ analysis.pass_count }}</div>
+                </div>
+                <div class="stat">
+                    <div class="label">Fail Count</div>
+                    <div class="value">{{ analysis.fail_count }}</div>
+                </div>
+                <div class="stat">
+                    <div class="label">Pass Rate</div>
+                    <div class="value">{{ analysis.pass_rate }}%</div>
+                </div>
+            </div>
+        </section>
+
+        <div class="grid">
+            <section class="card">
+                <h2>Top Students</h2>
+                <p>Highest overall performance across all marks.</p>
+                <div class="chart-wrap">
+                    <canvas id="studentsChart"></canvas>
+                </div>
+            </section>
+
+            <section class="card">
+                <h2>Subject Average Comparison</h2>
+                <p>Average marks percentage per subject across the whole class.</p>
+                <div class="chart-wrap">
+                    <canvas id="subjectsChart"></canvas>
+                </div>
+            </section>
+        </div>
+
+        <div class="grid">
+            <section class="card">
+                <h2>Attendance By Subject</h2>
+                <p>Average lecture attendance per subject.</p>
+                <div class="chart-wrap">
+                    <canvas id="attendanceChart"></canvas>
+                </div>
+            </section>
+
+            <section class="card">
+                <h2>Pass / Fail Split</h2>
+                <p>Overall student result distribution.</p>
+                <div class="chart-wrap">
+                    <canvas id="splitChart"></canvas>
+                </div>
+            </section>
+        </div>
+
+        <section class="card wide">
+            <h2>Student Leaderboard</h2>
+            <p>Overall percentage and attendance rate for every student.</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Roll No</th>
+                        <th>Name</th>
+                        <th>Semester</th>
+                        <th>Marks %</th>
+                        <th>Attendance %</th>
+                        <th>Grade</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in analysis.students %}
+                    <tr>
+                        <td>{{ student.roll }}</td>
+                        <td>{{ student.name }}</td>
+                        <td>{{ student.semester }}</td>
+                        <td>{{ student.percentage }}%</td>
+                        <td>{{ student.attendance_rate }}%</td>
+                        <td>{{ student.grade }}</td>
+                        <td><span class="badge {{ 'pass' if student.status == 'Pass' else 'fail' }}">{{ student.status }}</span></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+    </div>
+
+    <script>
+        const studentLabels = {{ analysis.student_labels | tojson }};
+        const studentPercentages = {{ analysis.student_percentages | tojson }};
+        const subjectLabels = {{ analysis.subject_labels | tojson }};
+        const subjectPercentages = {{ analysis.subject_percentages | tojson }};
+        const attendanceLabels = {{ analysis.attendance_subject_labels | tojson }};
+        const attendancePercentages = {{ analysis.attendance_subject_percentages | tojson }};
+        const passCount = {{ analysis.pass_count }};
+        const failCount = {{ analysis.fail_count }};
+
+        const baseOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { labels: { color: '#e5eefc' } }
+            },
+            scales: {
+                x: {
+                    ticks: { color: '#cfe0ff' },
+                    grid: { color: 'rgba(255,255,255,0.06)' }
+                },
+                y: {
+                    ticks: { color: '#cfe0ff' },
+                    grid: { color: 'rgba(255,255,255,0.06)' },
+                    beginAtZero: true,
+                    max: 100
+                }
+            }
+        };
+
+        if (studentLabels.length) {
+            new Chart(document.getElementById('studentsChart'), {
+                type: 'bar',
+                data: {
+                    labels: studentLabels,
+                    datasets: [{
+                        label: 'Marks %',
+                        data: studentPercentages,
+                        backgroundColor: 'rgba(79, 140, 255, 0.8)',
+                        borderRadius: 10
+                    }]
+                },
+                options: baseOptions
+            });
+        }
+
+        if (subjectLabels.length) {
+            new Chart(document.getElementById('subjectsChart'), {
+                type: 'bar',
+                data: {
+                    labels: subjectLabels,
+                    datasets: [{
+                        label: 'Average %',
+                        data: subjectPercentages,
+                        backgroundColor: 'rgba(49, 196, 141, 0.8)',
+                        borderRadius: 10
+                    }]
+                },
+                options: baseOptions
+            });
+        }
+
+        if (attendanceLabels.length) {
+            new Chart(document.getElementById('attendanceChart'), {
+                type: 'line',
+                data: {
+                    labels: attendanceLabels,
+                    datasets: [{
+                        label: 'Attendance %',
+                        data: attendancePercentages,
+                        borderColor: '#f59e0b',
+                        backgroundColor: 'rgba(245, 158, 11, 0.18)',
+                        fill: true,
+                        tension: 0.35,
+                        pointRadius: 4
+                    }]
+                },
+                options: baseOptions
+            });
+        }
+
+        new Chart(document.getElementById('splitChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Pass', 'Fail'],
+                datasets: [{
+                    data: [passCount, failCount],
+                    backgroundColor: ['#31c48d', '#ef4444'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { labels: { color: '#e5eefc' } } }
+            }
+        });
+    </script>
+</body>
+</html>

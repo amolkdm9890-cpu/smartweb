@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ subject }} Attendance</title>
+    <style>
+        /* General Page Styling */
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f9fafc;
+            color: #333;
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: #2c3e50;
+        }
+
+        form {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        label {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        input[type="number"] {
+            padding: 6px 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 80px;
+        }
+
+        button {
+            background: #3498db;
+            color: #fff;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 15px;
+            margin-top: 15px;
+            transition: background 0.3s ease;
+        }
+
+        button:hover {
+            background: #2980b9;
+        }
+
+        /* Table Styling */
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        th, td {
+            border: 1px solid #e0e0e0;
+            padding: 12px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #3498db;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f7fd;
+        }
+
+        select {
+            padding: 6px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            background: #fff;
+        }
+
+        a {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>Mark Attendance for {{ subject }}</h1>
+
+    <form method="POST" action="/attendance">
+        <label>Lecture No:</label>
+        <input type="number" name="lecture" required>
+
+        <table>
+            <tr>
+                <th>Roll No</th>
+                <th>Name</th>
+                <th>Status</th>
+            </tr>
+            {% for student in students %}
+            <tr>
+                <td>{{ student[0] }}</td>
+                <td>{{ student[1] }}</td>
+                <td>
+                    <select name="status">
+                        <option value="Present">Present</option>
+                        <option value="Absent">Absent</option>
+                    </select>
+                    <input type="hidden" name="roll" value="{{ student[0] }}">
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        <button type="submit">Submit Attendance</button>
+    </form>
+
+    <!-- Lecture-wise Counts -->
+    <h2>{{ subject }} Lecture-wise Attendance Summary</h2>
+    <table>
+        <tr>
+            <th>Lecture No</th>
+            <th>Present Count</th>
+            <th>Absent Count</th>
+            <th>Download PDF</th>
+        </tr>
+        {% for lecture, stats in counts.items() %}
+        <tr>
+            <td>{{ lecture }}</td>
+            <td>{{ stats['Present'] }}</td>
+            <td>{{ stats['Absent'] }}</td>
+            <td><a href="/download_attendance_pdf/{{ lecture }}">Download PDF</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <!-- Detailed Records -->
+    <h2>All Attendance Records for {{ subject }}</h2>
+    <table>
+        <tr>
+            <th>Roll No</th>
+            <th>Lecture</th>
+            <th>Status</th>
+            <th>Date</th>
+        </tr>
+        {% for row in data %}
+        <tr>
+            <td>{{ row[0] }}</td>
+            <td>{{ row[2] }}</td>
+            <td>{{ row[3] }}</td>
+            <td>{{ row[4] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

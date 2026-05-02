@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Education Portal</title>
+    <style>
+        :root {
+            --bg: #f5f1e8;
+            --surface: #ffffff;
+            --surface-2: #f8f5ef;
+            --brand: #16324f;
+            --brand-2: #2a5b84;
+            --accent: #b8893a;
+            --text: #1f2933;
+            --muted: #5f6b77;
+            --border: #d9d1c3;
+            --shadow: 0 12px 28px rgba(31, 41, 51, 0.09);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            background:
+                radial-gradient(circle at 20% -10%, #f0e7d8 0%, transparent 36%),
+                radial-gradient(circle at 90% -20%, #dbe7f2 0%, transparent 28%),
+                var(--bg);
+            color: var(--text);
+            font-family: Georgia, "Times New Roman", serif;
+            line-height: 1.5;
+        }
+
+        .container {
+            width: min(1200px, 92%);
+            margin: 0 auto;
+        }
+
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            background: rgba(22, 50, 79, 0.94);
+            box-shadow: 0 8px 20px rgba(13, 27, 42, 0.26);
+        }
+
+        .header-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            padding: 10px 0;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #fff;
+            min-width: 280px;
+        }
+
+        .brand img {
+            width: 58px;
+            height: 58px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 2px solid #fff;
+            background: #fff;
+        }
+
+        .brand h1 {
+            font-size: 1.18rem;
+            margin: 0;
+            font-weight: 700;
+            letter-spacing: 0.6px;
+        }
+
+        nav ul {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+
+        nav a {
+            display: inline-block;
+            color: #f4f8ff;
+            text-decoration: none;
+            font-size: 0.9rem;
+            padding: 8px 12px;
+            border-radius: 999px;
+            border: 1px solid transparent;
+            transition: 0.2s ease;
+        }
+
+        nav a:hover {
+            border-color: rgba(255, 255, 255, 0.35);
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .hero {
+            margin: 26px 0 22px;
+            display: grid;
+            grid-template-columns: 2.2fr 1fr;
+            gap: 18px;
+        }
+
+        .hero-main {
+            background: linear-gradient(140deg, #16324f, #2a5b84);
+            color: #fff;
+            border-radius: 18px;
+            padding: 28px;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+            animation: revealUp 0.7s ease;
+        }
+
+        .hero-main::after {
+            content: "";
+            position: absolute;
+            inset: auto -40px -70px auto;
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .hero-main h2 {
+            margin: 0 0 10px;
+            font-size: 1.75rem;
+            line-height: 1.2;
+        }
+
+        .hero-main p {
+            margin: 0;
+            max-width: 80ch;
+            color: #e9f4ff;
+        }
+
+        .hero-links {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 18px;
+            box-shadow: var(--shadow);
+            animation: revealUp 0.9s ease;
+        }
+
+        .hero-links h3 {
+            margin: 0 0 10px;
+            color: var(--brand);
+            font-size: 1.05rem;
+        }
+
+        .hero-links a {
+            display: block;
+            margin: 7px 0;
+            text-decoration: none;
+            color: var(--text);
+            padding: 8px 10px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--surface-2);
+            font-size: 0.95rem;
+            transition: 0.2s ease;
+        }
+
+        .hero-links a:hover {
+            transform: translateX(4px);
+            border-color: #bdd1e8;
+        }
+
+        .section {
+            margin: 18px 0;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 22px;
+            box-shadow: var(--shadow);
+            animation: revealUp 0.5s ease;
+        }
+
+        .section h2 {
+            margin: 0 0 10px;
+            font-size: 1.35rem;
+            color: var(--brand);
+            position: relative;
+            display: inline-block;
+            padding-right: 18px;
+        }
+
+        .section h2::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: -6px;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(to right, var(--brand-2), var(--accent));
+            border-radius: 999px;
+        }
+
+        .muted {
+            color: var(--muted);
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 14px;
+            margin-top: 12px;
+        }
+
+        .card {
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: #fbfaf7;
+            padding: 14px;
+        }
+
+        .card h3 {
+            margin-top: 0;
+            font-size: 1rem;
+            color: #153a5b;
+        }
+
+        .card ul {
+            margin: 0;
+            padding-left: 18px;
+        }
+
+        .card li {
+            margin: 6px 0;
+        }
+
+        a {
+            color: #0d5792;
+        }
+
+        .teacher-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 14px;
+        }
+
+        .teacher-card {
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 14px;
+            background: #fbfaf7;
+            text-align: center;
+        }
+
+        .teacher-card img {
+            width: 88px;
+            height: 88px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #fff;
+            box-shadow: 0 4px 10px rgba(18, 46, 76, 0.14);
+        }
+
+        .teacher-card h3 {
+            margin: 10px 0 4px;
+            color: #173f62;
+            font-size: 1rem;
+        }
+
+        .slider {
+            margin-top: 14px;
+            overflow: hidden;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .slides {
+            display: flex;
+            gap: 8px;
+            animation: galleryMove 24s linear infinite;
+            width: max-content;
+        }
+
+        .slides img {
+            width: 260px;
+            height: 170px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .developer-card {
+            max-width: 320px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            background: #fbfaf7;
+            text-align: center;
+        }
+
+        .developer-card img {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #fff;
+            box-shadow: 0 4px 10px rgba(18, 46, 76, 0.14);
+        }
+
+        footer {
+            margin-top: 24px;
+            background: #16324f;
+            color: #fff;
+            text-align: center;
+            padding: 16px;
+            font-size: 0.92rem;
+        }
+
+        @keyframes revealUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes galleryMove {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        @media (max-width: 960px) {
+            .hero {
+                grid-template-columns: 1fr;
+            }
+
+            .brand h1 {
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .header-bar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            nav ul {
+                justify-content: flex-start;
+            }
+
+            .hero-main h2 {
+                font-size: 1.35rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-bar">
+            <div class="brand">
+                <img src="./logo.jpeg" alt="College Logo">
+                <h1>SMART EDUCATION PORTAL</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#subjects">Notes</a></li>
+                    <li><a href="#timetable">Timetable</a></li>
+                    <li><a href="#teachers">Teachers</a></li>
+                    <li><a href="#student-corner">Students</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <section id="home" class="hero">
+            <div class="hero-main">
+                <h2>Department of BSc Computer Science</h2>
+                <p>
+                    The BCS department provides students with a strong foundation in programming, software development,
+                    data handling, and modern computing technologies. The portal supports daily academic activities such as
+                    class resources, attendance updates, and semester performance tracking.
+                </p>
+            </div>
+            <aside class="hero-links">
+                <h3>Quick Access</h3>
+                <a href="/student/register">Student Registration</a>
+                <a href="/student/login">Student Login</a>
+                <a href="/teacher/login">Staff Login</a>
+                <a href="#subjects">View Notes</a>
+                <a href="#timetable">View Timetable</a>
+            </aside>
+        </section>
+
+        <section id="about" class="section">
+            <h2>About Department</h2>
+            <p class="muted">
+                The department was introduced to prepare industry-ready computer science graduates through theory, practical
+                labs, mini projects, seminars, and technical events. The curriculum continuously evolves with modern topics
+                such as AI, cloud computing, cyber security, and data science.
+            </p>
+            <div class="card-grid">
+                <article class="card">
+                    <h3>Lab Details - First Year</h3>
+                    <ul>
+                        <li><a href="./B1.pdf" target="_blank">Lab 1: B1</a></li>
+                        <li><a href="./B2.pdf" target="_blank">Lab 2: B2</a></li>
+                        <li><a href="./B3.pdf" target="_blank">Lab 3: B3</a></li>
+                        <li><a href="./B6.pdf" target="_blank">Lab 4: B6</a></li>
+                    </ul>
+                </article>
+                <article class="card">
+                    <h3>Lab Details - Second Year</h3>
+                    <ul>
+                        <li><a href="B1.pdf" target="_blank">Lab 1: B1</a></li>
+                        <li><a href="B2.pdf" target="_blank">Lab 2: B2</a></li>
+                        <li><a href="B3.pdf" target="_blank">Lab 3: B3</a></li>
+                        <li><a href="B6.pdf" target="_blank">Lab 4: B6</a></li>
+                    </ul>
+                </article>
+                <article class="card">
+                    <h3>Achievements</h3>
+                    <ul>
+                        <li>Student participation in hackathons and coding events</li>
+                        <li>Faculty-led workshops and technical seminars</li>
+                        <li>Project presentations and placement support activities</li>
+                    </ul>
+                </article>
+            </div>
+        </section>
+
+        <section id="subjects" class="section">
+            <h2>Subjects and Notes</h2>
+            <div class="card-grid">
+                <article class="card">
+                    <h3>Semester 1</h3>
+                    <ul>
+                        <li><a href="./cpp-1.pdf" target="_blank">C Notes</a></li>
+                        <li><a href="./boc(2).docx" target="_blank">BOC Notes</a></li>
+                        <li><a href="./HTML-5.docx" target="_blank">HTML Notes</a></li>
+                        <li><a href="./operating system 2222.docx" target="_blank">Operating System Notes</a></li>
+                    </ul>
+                </article>
+                <article class="card">
+                    <h3>Semester 2</h3>
+                    <ul>
+                        <li><a href="./cpp-1.pdf" target="_blank">CPP Notes</a></li>
+                        <li><a href="./DBMS.PDF" target="_blank">DBMS Notes</a></li>
+                        <li><a href="./HTML-5.docx" target="_blank">HTML Notes</a></li>
+                        <li><a href="./operating system 2222.docx" target="_blank">Operating System Notes</a></li>
+                    </ul>
+                </article>
+            </div>
+        </section>
+
+        <section id="timetable" class="section">
+            <h2>Lecture Timetable</h2>
+            <p>Download weekly timetable: <a href="./tm.pdf" target="_blank">Timetable PDF</a></p>
+            <p>Practical batch schedule: <a href="./tm.pdf" target="_blank">Practical Timetable PDF</a></p>
+            <p>Monthly attendance report: <a href="./1sty.pdf" target="_blank">Attendance PDF</a></p>
+        </section>
+
+        <section id="teachers" class="section">
+            <h2>Teacher Information</h2>
+            <div class="teacher-grid">
+                <article class="teacher-card">
+                    <img src="./hod.jpeg" alt="HOD">
+                    <h3>Dr. Ritesh Magre</h3>
+                    <p>Head of Department</p>
+                </article>
+                <article class="teacher-card">
+                    <img src="./ab.jpeg" alt="A R Baniya">
+                    <h3>Ms. A. R. Baniya</h3>
+                    <p>Subject: Python</p>
+                </article>
+                <article class="teacher-card">
+                    <img src="./SD.jpeg" alt="S S Deshmukh">
+                    <h3>Ms. S. S. Deshmukh</h3>
+                    <p>Assistant Professor</p>
+                </article>
+                <article class="teacher-card">
+                    <img src="./MS.jpeg" alt="M A Sonawane">
+                    <h3>Ms. M. A. Sonawane</h3>
+                    <p>Assistant Professor</p>
+                </article>
+                <article class="teacher-card">
+                    <img src="./aj.jpeg" alt="A V Jawle">
+                    <h3>Ms. A. V. Jawle</h3>
+                    <p>Assistant Professor</p>
+                </article>
+                <article class="teacher-card">
+                    <img src="./YG.jpeg" alt="Y S Jagdale">
+                    <h3>Ms. Y. S. Jagdale</h3>
+                    <p>Assistant Professor</p>
+                </article>
+                <article class="teacher-card">
+                    <img src="./GW.jpeg" alt="G R Wagh">
+                    <h3>Ms. G. R. Wagh</h3>
+                    <p>Assistant Professor</p>
+                </article>
+                <article class="teacher-card">
+                    <img src="./BH.jpeg" alt="B K Hiwarde">
+                    <h3>Dr. B. K. Hiwarde</h3>
+                    <p>Technical Head</p>
+                </article>
+            </div>
+        </section>
+
+        <section id="student-corner" class="section">
+            <h2>Student Corner</h2>
+            <div class="card-grid">
+                <article class="card">
+                    <h3>Resources</h3>
+                    <ul>
+                        <li><a href="#subjects">View Notes and Syllabus</a></li>
+                        <li><a href="https://nptel.ac.in/" target="_blank">NPTEL</a></li>
+                        <li><a href="https://www.coursera.org/" target="_blank">Coursera</a></li>
+                    </ul>
+                </article>
+                <article class="card">
+                    <h3>Academic Support</h3>
+                    <p class="muted">Use your student login to access attendance, marks, and analysis dashboard modules.</p>
+                </article>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Campus Highlights</h2>
+            <div class="slider" aria-label="Campus highlights image strip">
+                <div class="slides">
+                    <img src="./1.jpg" alt="Campus photo 1">
+                    <img src="./2.jpg" alt="Campus photo 2">
+                    <img src="./3.jpg" alt="Campus photo 3">
+                    <img src="./4.jpg" alt="Campus photo 4">
+                    <img src="./5.jpg" alt="Campus photo 5">
+                    <img src="./6.jpg" alt="Campus photo 6">
+                    <img src="./7.jpeg" alt="Campus photo 7">
+                    <img src="./8.jpeg" alt="Campus photo 8">
+                    <img src="./1.jpg" alt="Campus photo 1 duplicate">
+                    <img src="./2.jpg" alt="Campus photo 2 duplicate">
+                    <img src="./3.jpg" alt="Campus photo 3 duplicate">
+                    <img src="./4.jpg" alt="Campus photo 4 duplicate">
+                    <img src="./5.jpg" alt="Campus photo 5 duplicate">
+                    <img src="./6.jpg" alt="Campus photo 6 duplicate">
+                    <img src="./7.jpeg" alt="Campus photo 7 duplicate">
+                    <img src="./8.jpeg" alt="Campus photo 8 duplicate">
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="section">
+            <h2>Contact</h2>
+            <p><strong>Department Email:</strong> <a href="mailto:computerscience@gmail.com">computerscience@gmail.com</a></p>
+            <p><strong>Phone:</strong> +91 78220 65495</p>
+            <p><strong>College Website:</strong> <a href="https://deogiricollege.org" target="_blank">deogiricollege.org</a></p>
+        </section>
+
+        <section class="section">
+            <h2>Developer</h2>
+            <article class="developer-card">
+                <img src="./ak.jpg" alt="Amol Kadam">
+                <h3>Amol Kadam</h3>
+                <p><a href="https://www.instagram.com/amol_kadam_patil_05?igsh=MWlhdmtkZWgzMTk3ag==" target="_blank">Instagram Profile</a></p>
+                <p><strong>Contact:</strong> +91 78220 65495</p>
+                <p><a href="mailto:amolkdm9890@gmail.com">amolkdm9890@gmail.com</a></p>
+            </article>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; BSC Computer Science. All rights reserved.</p>
+    </footer>
+</body>
+</html>

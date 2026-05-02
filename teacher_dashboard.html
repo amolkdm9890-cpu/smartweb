@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Teacher Dashboard</title>
+
+    <!-- ===== CSS ===== -->
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: "Segoe UI", Roboto, Arial, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: #f1f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Main Card */
+        .dashboard {
+            width: 420px;
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            overflow: hidden;
+            animation: slideUp 0.8s ease;
+        }
+
+        /* Header */
+        .header {
+            background: #2c3e50;
+            padding: 20px;
+            color: #fff;
+            text-align: center;
+        }
+
+        .header h2 {
+            margin: 0;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .header p {
+            margin-top: 6px;
+            font-size: 14px;
+            opacity: 0.85;
+        }
+
+        /* Content */
+        .content {
+            padding: 22px;
+        }
+
+        /* Profile Info */
+        .profile {
+            background: #f8f9fc;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+
+        .profile p {
+            margin: 6px 0;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .profile span {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        /* Menu Buttons */
+        .menu a {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            background: #ffffff;
+            border: 1px solid #e2e6ea;
+            border-radius: 6px;
+            text-decoration: none;
+            color: #2c3e50;
+            font-size: 14.5px;
+            transition: all 0.25s ease;
+        }
+
+        .menu a:hover {
+            background: #3498db;
+            color: #fff;
+            transform: translateX(4px);
+            box-shadow: 0 4px 10px rgba(52,152,219,0.25);
+        }
+
+        .menu a span {
+            font-size: 16px;
+            opacity: 0.8;
+        }
+
+        /* Logout */
+        .logout {
+            margin-top: 15px;
+        }
+
+        .logout a {
+            background: #e74c3c;
+            border-color: #e74c3c;
+            color: #fff;
+        }
+
+        .logout a:hover {
+            background: #c0392b;
+            box-shadow: 0 4px 10px rgba(231,76,60,0.3);
+        }
+
+        /* Animation */
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="dashboard">
+
+    <!-- Header -->
+    <div class="header">
+        <h2>Teacher Dashboard</h2>
+        <p>Smart Education Portal</p>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+
+        <!-- Teacher Info -->
+        <div class="profile">
+            <p><span>Name:</span> {{ teacher[0] }}</p>
+            <p><span>Subject:</span> {{ teacher[1] }}</p>
+            <p><span>Username:</span> {{ teacher[2] }}</p>
+        </div>
+
+        <!-- Menu -->
+        <div class="menu">
+            <a href="/attendance">
+                Manage Attendance
+                <span>›</span>
+            </a>
+
+            <a href="/add_marks">
+                Add Student Marks
+                <span>›</span>
+            </a>
+
+            <a href="/teacher/analysis">
+                Overall Student Analysis
+                <span>›</span>
+            </a>
+
+            
+        </div>
+
+        <!-- Logout -->
+        <div class="menu logout">
+            <a href="/logout" onclick="return confirmLogout()">
+                Logout
+                <span>⎋</span>
+            </a>
+        </div>
+
+    </div>
+</div>
+
+<!-- ===== JavaScript ===== -->
+<script>
+    function confirmLogout() {
+        return confirm("Do you really want to logout?");
+    }
+</script>
+
+</body>
+</html>

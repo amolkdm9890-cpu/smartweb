@@ -1,0 +1,81 @@
+<h2>Marksheet</h2>
+
+<table class="marksheet">
+    <tr>
+        <th>Subject</th>
+        <th>Type</th>
+        <th>Marks Obtained</th>
+        <th>Total Marks</th>
+    </tr>
+    {% for row in data %}
+    <tr>
+        <td>{{ row[0] }}</td>
+        <td>{{ row[1] }}</td>
+        <td>{{ row[2] }}</td>
+        <td>{{ row[3] }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<div class="summary">
+    <h3>Total Marks: {{ total_obtained }} / {{ total_max }}</h3>
+    <h3>Percentage: {{ "%.2f"|format(percentage) }}%</h3>
+    <h3>Grade: {{ grade }}</h3>
+    <h3>SGPA: {{ sgpa }}</h3>
+</div>
+<p>
+        <a href="/download_marksheet" class="btn btn-primary">Download My marksheet PDF</a>
+    </p>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #f9f9f9;
+        padding: 20px;
+    }
+
+    h2 {
+        text-align: center;
+        color: #2c3e50;
+        margin-bottom: 20px;
+    }
+
+    .marksheet {
+        width: 80%;
+        margin: 0 auto;
+        border-collapse: collapse;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        background: #fff;
+    }
+
+    .marksheet th {
+        background: #34495e;
+        color: #fff;
+        padding: 12px;
+        text-align: center;
+    }
+
+    .marksheet td {
+        padding: 10px;
+        text-align: center;
+        border: 1px solid #ddd;
+    }
+
+    .marksheet tr:nth-child(even) {
+        background: #f2f2f2;
+    }
+
+    .summary {
+        width: 80%;
+        margin: 20px auto;
+        padding: 15px;
+        background: #ecf0f1;
+        border-radius: 8px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .summary h3 {
+        margin: 8px 0;
+        color: #2c3e50;
+    }
+</style>
